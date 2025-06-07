@@ -62,7 +62,7 @@ const submitPhone = async () => {
 
   try {
     // Panggil backend untuk mengirim OTP — tidak cek apakah nomor ada
-    const response = await fetch(`https://dreampos.id/admin/api/sendOTP?telp=${fullPhone}`);
+    const response = await fetch(`https://dreampos.id/admin/api/cekNotelp?telp=${fullPhone}`);
 
     if (!response.ok) {
       toast.error("❌ Gagal mengirim OTP. Silakan coba lagi.");
