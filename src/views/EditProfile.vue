@@ -72,7 +72,7 @@ const submitForm = async () => {
 
   const data = await res.json();
   if (data.success) {
-    alert("Profil berhasil diupdate!");
+    alert("Profil berhasil diupdate!!");
     router.push("/profile");
   } else {
     alert("Gagal mengupdate profil.");
