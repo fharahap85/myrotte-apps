@@ -58,27 +58,28 @@ const submitPhone = async () => {
     return;
   }
 
+  // Gabungkan dengan kode negara (jika API membutuhkan)
   const fullPhone = `62${phone.value}`;
+
   try {
-    // Panggil API cekNotelp (yang juga kirim OTP)
+    // Panggil API untuk Cek Nomor Telepon dan Mengirim OTP
+    // Sesuaikan endpoint dan cara API Anda merespons
     const response = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${fullPhone}`);
     const data = await response.json();
 
-    // Simpan nomor sementara untuk OTP
+    // Asumsi: API akan mengembalikan 'success: true' jika nomor valid dan OTP dikirim
+    // Atau 'success: false' dengan pesan error jika nomor tidak terdaftar/masalah lain.
+
+    // --- PENTING: HANYA SIMPAN penanda sementara untuk OTP ---
     localStorage.setItem("temp_phone_for_otp", fullPhone);
 
-    // Tampilkan info jika nomor tidak terdaftar
-    if (!data.success) {
-      toast.info("Nomor belum terdaftar, silakan lanjutkan verifikasi OTP untuk registrasi.");
-    } else {
-      toast.success("✅ OTP dikirim ke nomor Anda.");
-    }
-
-    // Langsung ke halaman OTP, apapun hasilnya
-    router.push({ name: "Otp" });
+    toast.success("✅ OTP berhasil dikirim ke nomor Anda.");
+    router.push({ name: "Otp" }); // Arahkan ke halaman OTP
   } catch (error) {
-    console.error("Error kirim OTP:", error);
-    toast.error("⚠️ Gagal mengirim OTP. Periksa koneksi Anda.");
+    console.error("Error saat mengirim OTP:", error);
+    toast.error("⚠️ Terjadi kesalahan jaringan atau server saat mengirim OTP.");
+    // Jika ada error jaringan, juga hapus penanda sementara
+    localStorage.removeItem("temp_phone_for_otp");
   }
 };
 </script>

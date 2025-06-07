@@ -131,8 +131,8 @@ router.beforeEach((to, from, next) => {
   console.log(`isLoggedIn: ${isLoggedIn}, hasTempPhoneForOtp: ${hasTempPhoneForOtp}`);
 
   // 1. Jika pengguna SUDAH LOGIN dan mencoba mengakses halaman autentikasi (Login, OTP, Register)
-  if (isLoggedIn && to.meta.authFlow) {
-    console.log("Sudah login, redirecting from authFlow page to /home");
+  if (isLoggedIn && to.meta.authFlow && to.name !== "Register") {
+    console.log("Sudah login, dan mencoba akses halaman auth (selain Register). Redirect ke Home.");
     return next({ name: "Home" });
   }
 

@@ -73,35 +73,56 @@ const verifyOtp = async () => {
   }
 
   try {
-    // Verifikasi OTP
+    // Panggil API untuk Verifikasi OTP
+    // Sesuaikan endpoint dan cara API Anda merespons
     const res = await fetch(`https://dreampos.id/admin/api/verifikasiOTP?phone=${tempPhoneNumber.value}&otp=${otp.value}`);
     const data = await res.json();
 
     if (res.ok && data.success) {
-      // ✅ Simpan nomor setelah verifikasi berhasil
-      localStorage.setItem("phone", tempPhoneNumber.value);
-      localStorage.removeItem("temp_phone_for_otp");
+      // Asumsi API mengembalikan 'success: true' jika OTP benar
+      // --- PENTING: BARU SET 'phone' KE LOCALSTORAGE DI SINI SETELAH OTP TERVERIFIKASI ---
+      localStorage.setItem("phone", tempPhoneNumber.value); // Ini menandakan user sudah login
+      localStorage.removeItem("temp_phone_for_otp"); // Hapus penanda sementara setelah berhasil
 
-      // Trigger event perubahan status login
+      // Dispatch event agar komponen seperti Navbar bisa merespons perubahan status login
       window.dispatchEvent(new Event("login-status-changed"));
 
-      // Cek ulang apakah nomor terdaftar
+      // Lanjutkan dengan logika setelah berhasil verifikasi OTP:
+      // Cek apakah nomor HP sudah terdaftar. Ini bisa dilakukan di backend
+      // atau melalui API 'cekNotelp' lagi jika memang alur Anda memerlukan itu.
       const cekRes = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`);
       const cekData = await cekRes.json();
 
-      if (cekData.success) {
-        toast.success("✅ Login berhasil! Selamat datang.");
-        router.push({ name: "Home" });
-      } else {
-        toast.info("📋 Nomor belum terdaftar. Silakan lengkapi data.");
-        router.push({ name: "Register" });
+      // Asumsi: cekData.is_registered adalah boolean yang menandakan pendaftaran.
+      // Anda harus menyesuaikan properti ini berdasarkan respons API Anda.
+      if (res.ok && data.success) {
+        // Verifikasi OTP berhasil
+
+        const cekRes = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`);
+        const cekData = await cekRes.json();
+
+        console.log("cekNotelp response:", cekData);
+
+        // Setelah semua proses cek selesai baru login (set localStorage)
+        localStorage.setItem("phone", tempPhoneNumber.value);
+        localStorage.removeItem("temp_phone_for_otp");
+        window.dispatchEvent(new Event("login-status-changed"));
+
+        if (cekData.success) {
+          toast.success("✅ Login berhasil! Selamat datang kembali.");
+          router.push({ name: "Home" });
+        } else {
+          toast.info("📋 Nomor belum terdaftar. Silakan lengkapi data.");
+          router.push({ name: "Register" }); // Ini tidak akan ditabrak redirect lagi
+        }
       }
     } else {
+      // Tampilkan pesan error dari API jika ada, atau pesan default
       toast.error(data.message || "Kode OTP salah atau sudah kadaluarsa.");
     }
   } catch (error) {
     console.error("Error verifying OTP:", error);
-    toast.error("Terjadi kesalahan saat memverifikasi OTP.");
+    toast.error("Terjadi kesalahan jaringan atau server saat memverifikasi OTP.");
   }
 };
 </script>
