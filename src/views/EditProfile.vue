@@ -20,11 +20,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
 
 const router = useRouter();
-const toast = useToast();
-
 const form = ref({
   name: "",
   gender: "",
@@ -38,26 +35,11 @@ const userId = ref(null); // ID akan disimpan di sini
 
 onMounted(async () => {
   const phone = localStorage.getItem("phone");
-  if (!phone) {
-    toast.warning("Anda belum login.");
-    router.push("/login");
-    return;
-  }
+  const res = await fetch("/api/getCustomer");
+  const data = await res.json();
 
-  try {
-    const res = await fetch("https://dreampos.id/admin/api/getCustomer");
-    if (!res.ok) throw new Error("Gagal mengambil data pengguna");
-
-    const json = await res.json();
-    const data = Array.isArray(json) ? json : json.data;
-
-    const user = data.find((u) => String(u.phone) === String(phone));
-    if (!user) {
-      toast.error("Data pengguna tidak ditemukan.");
-      router.push("/login");
-      return;
-    }
-
+  const user = data.find((u) => u.phone === phone);
+  if (user) {
     userId.value = user.id;
     form.value = {
       name: user.name || "",
@@ -68,14 +50,15 @@ onMounted(async () => {
       city: user.city || "",
       address: user.address || "",
     };
-  } catch (err) {
-    toast.error("Gagal mengambil data profil: " + err.message);
+  } else {
+    alert("Data user tidak ditemukan.");
+    router.push("/login");
   }
 });
 
 const submitForm = async () => {
   if (!userId.value) {
-    toast.error("Gagal update: ID tidak ditemukan.");
+    alert("Gagal update: ID tidak ditemukan");
     return;
   }
 
@@ -89,10 +72,10 @@ const submitForm = async () => {
 
   const data = await res.json();
   if (data.success) {
-    toast.success("✅ Profil berhasil diperbarui!");
+    alert("Profil berhasil diupdate!");
     router.push("/profile");
   } else {
-    toast.error("❌ Gagal mengupdate profil.");
+    alert("Gagal mengupdate profil.");
   }
 };
 </script>
