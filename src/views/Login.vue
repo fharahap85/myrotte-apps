@@ -58,34 +58,25 @@ const submitPhone = async () => {
     return;
   }
 
-  // Gabungkan dengan kode negara (jika API membutuhkan)
   const fullPhone = `62${phone.value}`;
+  localStorage.setItem("temp_phone_for_otp", fullPhone); // Simpan nomor untuk halaman OTP
 
   try {
-    // Panggil API untuk Cek Nomor Telepon dan Mengirim OTP
-    // Sesuaikan endpoint dan cara API Anda merespons
-    const response = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${fullPhone}`);
+    // Tetap kirim OTP meskipun nomor belum terdaftar
+    const response = await fetch(`https://dreampos.id/admin/api/kirimOtp?phone=${fullPhone}`);
     const data = await response.json();
 
-    // Asumsi: API akan mengembalikan 'success: true' jika nomor valid dan OTP dikirim
-    // Atau 'success: false' dengan pesan error jika nomor tidak terdaftar/masalah lain.
     if (response.ok && data.success) {
-      // --- PENTING: HANYA SIMPAN penanda sementara untuk OTP ---
-      localStorage.setItem("temp_phone_for_otp", fullPhone);
-
-      toast.success("✅ OTP berhasil dikirim ke nomor Anda.");
-      router.push({ name: "Otp" }); // Arahkan ke halaman OTP
+      toast.success("✅ OTP berhasil dikirim.");
     } else {
-      // Tampilkan pesan error dari API jika ada, atau pesan default
-      toast.error(`❌ Gagal mengirim OTP: ${data.message || "Nomor tidak terdaftar atau ada kesalahan."}`);
-      // Jika API gagal mengirim OTP, pastikan penanda sementara dihapus
-      localStorage.removeItem("temp_phone_for_otp");
+      toast.warning("⚠️ OTP dikirim, tetapi ada peringatan dari server.");
     }
+
+    // Tetap navigasi ke halaman OTP
+    router.push({ name: "Otp" });
   } catch (error) {
-    console.error("Error saat mengirim OTP:", error);
-    toast.error("⚠️ Terjadi kesalahan jaringan atau server saat mengirim OTP.");
-    // Jika ada error jaringan, juga hapus penanda sementara
-    localStorage.removeItem("temp_phone_for_otp");
+    console.error("Gagal mengirim OTP:", error);
+    toast.error("❌ Gagal mengirim OTP. Silakan coba lagi.");
   }
 };
 </script>
