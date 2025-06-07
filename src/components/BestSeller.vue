@@ -1,12 +1,11 @@
 <template>
   <section class="relative mt-5">
-    <div
-      class="bg-gradient-to-r from-[#FF0000] to-[#B60000] text-white px-4 py-6 rounded-2xl"
-    >
+    <div class="bg-gradient-to-r from-[#FF0000] to-[#B60000] text-white px-4 py-6 rounded-2xl">
       <h2 class="lg:text-2xl sm:text-lg font-bold mb-4">Produk Terlaris</h2>
 
       <div class="overflow-x-auto mx-7">
         <swiper
+          v-if="bestSellers.length"
           :space-between="20"
           :centered-slides="true"
           :loop="true"
@@ -15,23 +14,17 @@
           :navigation="{ nextEl: '#custom-next1', prevEl: '#custom-prev1' }"
           :modules="[Pagination, Navigation, Autoplay]"
           :breakpoints="{
-            0: { slidesPerView: 2 }, // Mobile
-            640: { slidesPerView: 2 }, // Tablet (sm)
-            1024: { slidesPerView: 4.4 }, // Desktop (lg+)
+            0: { slidesPerView: 2 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 4.4 },
           }"
           class="mySwiper"
         >
           <swiper-slide v-for="(best, index) in bestSellers" :key="index">
             <div class="bg-white text-black rounded-xl p-2">
-              <img
-                :src="best.image"
-                alt="Promo"
-                class="w-full h-full object-cover rounded-xl"
-              />
+              <img :src="best.image" alt="Promo" class="w-full h-full object-cover rounded-xl" />
               <h1 class="font-bold lg:text-2xl text-xs">{{ best.name }}</h1>
-              <h1 class="lg:text-lg text-xs">
-                Rp{{ Number(best.price).toLocaleString(0) }}
-              </h1>
+              <h1 class="lg:text-lg text-xs">Rp{{ Number(best.price).toLocaleString(0) }}</h1>
             </div>
           </swiper-slide>
           <div class="swiper-pagination relative mt-4"></div>

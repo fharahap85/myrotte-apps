@@ -1,6 +1,7 @@
 <template>
   <section class="px-4 py-6 relative">
     <swiper
+      v-if="promos.length"
       :slides-per-view="1.5"
       :space-between="20"
       :centered-slides="true"
@@ -12,11 +13,7 @@
       class="mySwiper"
     >
       <swiper-slide v-for="(promo, index) in promos" :key="index">
-        <img
-          :src="promo.pmo_image"
-          alt="Promo"
-          class="w-full h-full object-cover rounded-xl"
-        />
+        <img :src="promo.pmo_image" alt="Promo" class="w-full h-full object-cover rounded-xl" />
       </swiper-slide>
       <div class="swiper-pagination relative mt-5 right-4 flex"></div>
     </swiper>
@@ -50,9 +47,7 @@ const searchProducts = () => {
       return;
     }
 
-    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(
-      searchQuery.value
-    )}`;
+    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(searchQuery.value)}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {

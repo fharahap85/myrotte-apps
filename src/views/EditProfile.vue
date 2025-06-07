@@ -11,17 +11,8 @@
       <input v-model="form.email" placeholder="Email" class="input" />
       <input v-model="form.phone" placeholder="No. WhatsApp" class="input" />
       <input v-model="form.city" placeholder="Kota" class="input" />
-      <textarea
-        v-model="form.address"
-        placeholder="Alamat"
-        class="input"
-      ></textarea>
-      <button
-        type="submit"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Simpan Perubahan
-      </button>
+      <textarea v-model="form.address" placeholder="Alamat" class="input"></textarea>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan Perubahan</button>
     </form>
   </div>
 </template>
@@ -44,11 +35,26 @@ const userId = ref(null); // ID akan disimpan di sini
 
 onMounted(async () => {
   const phone = localStorage.getItem("phone");
-  const res = await fetch("/api/getCustomer");
-  const data = await res.json();
+  if (!phone) {
+    alert("Anda belum login.");
+    router.push("/login");
+    return;
+  }
 
-  const user = data.find((u) => u.phone === phone);
-  if (user) {
+  try {
+    const res = await fetch("https://dreampos.id/admin/api/getCustomer");
+    if (!res.ok) throw new Error("Gagal mengambil data pengguna");
+
+    const json = await res.json();
+    const data = Array.isArray(json) ? json : json.data;
+
+    const user = data.find((u) => String(u.phone) === String(phone));
+    if (!user) {
+      alert("Data pengguna tidak ditemukan.");
+      router.push("/login");
+      return;
+    }
+
     userId.value = user.id;
     form.value = {
       name: user.name || "",
@@ -59,9 +65,8 @@ onMounted(async () => {
       city: user.city || "",
       address: user.address || "",
     };
-  } else {
-    alert("Data user tidak ditemukan.");
-    router.push("/login");
+  } catch (err) {
+    alert("Terjadi kesalahan saat mengambil data profil: " + err.message);
   }
 });
 
@@ -88,7 +93,6 @@ const submitForm = async () => {
   }
 };
 </script>
-
 
 <style scoped>
 .input {

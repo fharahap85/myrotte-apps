@@ -1,3 +1,4 @@
+<!--src/App.vue-->
 <template>
   <div class="max-w-full">
     <Navbar v-if="!$route.meta.hideNavbarFooter" />

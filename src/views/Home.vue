@@ -1,12 +1,9 @@
+<!--src/views/Home.vue-->
 <template>
   <div class="mx-auto">
     <Header />
     <div class="p-4 max-w-7xl mx-auto">
-      <div
-        v-for="item in filtered"
-        :key="item.id || item.phone"
-        class="grid grid-cols-2 border p-4 rounded-xl shadow text-[#FF0000]"
-      >
+      <div v-for="item in filtered" :key="item.id || item.phone" class="grid grid-cols-2 border p-4 rounded-xl shadow text-[#FF0000]">
         <router-link to="/rottepoin">
           <div class="flex justify-start items-center space-x-4">
             <img src="/src/assets/Tukar point.png" alt="" class="size-16" />
@@ -75,9 +72,7 @@ const error = ref("");
 
 const router = useRouter();
 
-const filtered = computed(() =>
-  raw.value.filter((c) => String(c.phone) === String(phone.value))
-);
+const filtered = computed(() => raw.value.filter((c) => String(c.phone) === String(phone.value)));
 
 onMounted(async () => {
   const p = localStorage.getItem("phone");
