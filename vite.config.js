@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     host: true,
+    historyApiFallback: true,
     proxy: {
       "/api": {
         target: "https://dreampos.id",
