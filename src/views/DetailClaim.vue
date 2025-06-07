@@ -1,12 +1,7 @@
 <template>
   <div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-md shadow-lg">
     <!-- Tombol Kembali -->
-    <button
-      @click="$router.back()"
-      class="mb-4 text-red-600 hover:font-bold text-sm bg-gray-100 p-2 rounded hover:bg-gray-300"
-    >
-      ← Kembali
-    </button>
+    <button @click="goBack" class="mb-4 text-red-600 hover:font-bold text-sm bg-gray-100 p-2 rounded hover:bg-gray-300">← Kembali</button>
 
     <!-- Loading dan Error -->
     <div v-if="loading" class="text-center text-gray-500">Loading...</div>
@@ -17,11 +12,7 @@
       <h2 class="text-xl font-bold text-center mb-2">Detail Penukaran</h2>
 
       <!-- Gambar -->
-      <img
-        :src="claim.pp_image"
-        alt="Gambar Produk"
-        class="w-full h-auto mb-4 rounded-md object-cover"
-      />
+      <img :src="claim.pp_image" alt="Gambar Produk" class="w-full h-auto mb-4 rounded-md object-cover" />
 
       <!-- Nama Produk -->
       <div class="text-center mb-2">
@@ -33,23 +24,17 @@
       </div>
 
       <!-- Kode Tukar -->
-      <div
-        class="bg-red-100 border border-red-300 rounded-lg text-center mt-4 p-4"
-      >
+      <div class="bg-red-100 border border-red-300 rounded-lg text-center mt-4 p-4">
         <h4 class="text-sm font-medium text-red-700">KODE TUKAR</h4>
         <p class="text-lg font-bold text-red-700">{{ claim.tkr_kode }}</p>
-        <p class="text-xs mt-2 border-t border-t-red-600 font-bold text-gray-600">
-          <br>{{ countdownText }}
-        </p>
+        <p class="text-xs mt-2 border-t border-t-red-600 font-bold text-gray-600"><br />{{ countdownText }}</p>
       </div>
 
       <!-- Informasi -->
       <div class="mt-6">
         <h5 class="font-semibold mb-2">Cara Penukaran Point:</h5>
         <ol class="list-decimal list-inside text-sm space-y-1 text-gray-700">
-          <li>
-            Tunjukkan Kode Tukar di atas kepada kasir di Outlet Rotte Bakery.
-          </li>
+          <li>Tunjukkan Kode Tukar di atas kepada kasir di Outlet Rotte Bakery.</li>
           <li>Kunjungi outlet tempat penukaran point (lihat di bawah).</li>
           <li>Penukaran hanya berlaku 1 kali.</li>
           <li>Harus ditukarkan sebelum batas waktu atau akan hangus.</li>
@@ -58,29 +43,21 @@
 
       <!-- Lokasi -->
       <div class="mt-4">
-        <button class="text-sm text-red-600 hover:underline">
-          ⓘ Tekan di sini untuk melihat tempat penukaran
-        </button>
+        <button class="text-sm text-red-600 hover:underline">ⓘ Tekan di sini untuk melihat tempat penukaran</button>
       </div>
 
       <!-- Promo Info -->
-      <div
-        class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mt-4 text-sm text-yellow-800 rounded"
-      >
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mt-4 text-sm text-yellow-800 rounded">
         {{ claim.pp_deskripsi }}
       </div>
 
       <!-- Tanggal Info -->
       <div class="grid grid-cols-2 text-xs text-gray-500 mt-6 border-t pt-4">
         <div>Diajukan:</div>
-        <span class="font-bold text-right">{{
-          formatDateTime(claim.tkr_tgl_pengajuan)
-        }}</span>
+        <span class="font-bold text-right">{{ formatDateTime(claim.tkr_tgl_pengajuan) }}</span>
 
         <div>Batas Penukaran:</div>
-        <span class="font-bold text-right">{{
-          formatDateTime(claim.tkr_tgl_expired)
-        }}</span>
+        <span class="font-bold text-right">{{ formatDateTime(claim.tkr_tgl_expired) }}</span>
       </div>
     </div>
   </div>
@@ -121,9 +98,7 @@ export default {
 
       const claimId = this.$route.params.id;
       try {
-        const res = await fetch(
-          `https://dreampos.id/admin/api/getClaimbytkrID/${claimId}`
-        );
+        const res = await fetch(`https://dreampos.id/admin/api/getClaimbytkrID/${claimId}`);
         if (!res.ok) throw new Error("Gagal mengambil detail klaim");
         const data = await res.json();
         this.claim = Array.isArray(data) ? data[0] : data;
@@ -176,6 +151,10 @@ export default {
 
       updateCountdown(); // update pertama kali
       this.interval = setInterval(updateCountdown, 1000);
+    },
+    goBack() {
+      this.$router.back(); // navigasi kembali
+      window.scrollTo({ top: 0, behavior: "smooth" }); // scroll ke atas
     },
   },
 };

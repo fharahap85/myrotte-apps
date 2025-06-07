@@ -18,7 +18,7 @@ const register = async () => {
   }
 
   try {
-    const res = await fetch(`/api/register`, {
+    const res = await fetch(`https://dreampos.id/admin/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

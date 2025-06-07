@@ -1,5 +1,8 @@
 <template>
   <div class="p-4 max-w-3xl mx-auto text-gray-800">
+    <button @click="$router.back()" class="mb-4 text-red-600 hover:font-bold text-sm bg-gray-100 p-2 rounded hover:bg-gray-300">
+      ← Kembali
+    </button>
     <h1 class="text-2xl font-bold mb-4">Rotte Poin</h1>
 
     <section class="mb-6">

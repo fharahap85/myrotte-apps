@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
-    <button @click="$router.back()" class="mb-4 flex items-center text-red-600 hover:text-red-800 font-semibold text-sm">
+    <button @click="goBack" class="mb-4 flex items-center text-red-600 hover:text-red-800 font-semibold text-sm">
       ← Kembali ke Daftar Produk
     </button>
     <div v-if="loading">Loading...</div>
@@ -65,6 +65,10 @@ export default {
     },
   },
   methods: {
+    goBack() {
+      this.$router.back(); // navigasi kembali
+      window.scrollTo({ top: 0, behavior: "smooth" }); // scroll ke atas
+    },
     async fetchProduct() {
       this.loading = true;
       this.error = null;
@@ -87,7 +91,7 @@ export default {
       if (!customerId || !this.product?.pp_id) return;
 
       try {
-        const response = await fetch("/api/savePenukaranPoin", {
+        const response = await fetch("https://dreampos.id/admin/api/savePenukaranPoin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +114,7 @@ export default {
           // Set tab dan redirect
           localStorage.setItem("autoTab", "2");
           setTimeout(() => {
-            window.location.href = "/tukarpoin";
+            this.$router.push("/tukarpoin");
           }, 1000);
         } else {
           this.toast.warning(result.message || "Penukaran gagal.");

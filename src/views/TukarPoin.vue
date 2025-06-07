@@ -1,13 +1,13 @@
 <template>
   <div class="w-full max-w-3xl mx-auto mt-10">
+    <button @click="goBack" class="mb-4 text-red-600 hover:font-bold text-sm bg-gray-100 p-2 rounded hover:bg-gray-300">← Kembali</button>
     <!-- Menu Tab -->
     <div class="flex justify-around text-black p-4">
       <button
         @click="showMenu = 1"
         :class="{
           'border-b-4 border-red-600 text-red-600 font-bold': showMenu === 1,
-          'hover:border-b-4 hover:border-red-300 hover:text-red-300':
-            showMenu !== 1,
+          'hover:border-b-4 hover:border-red-300 hover:text-red-300': showMenu !== 1,
         }"
         class="w-1/2 py-2 focus:outline-none transition"
       >
@@ -17,8 +17,7 @@
         @click="showMenu = 2"
         :class="{
           'border-b-4 border-red-600 text-red-600 font-bold': showMenu === 2,
-          'hover:border-b-4 hover:border-red-300 hover:text-red-300':
-            showMenu !== 2,
+          'hover:border-b-4 hover:border-red-300 hover:text-red-300': showMenu !== 2,
         }"
         class="w-1/2 py-2 focus:outline-none transition"
       >
@@ -32,9 +31,7 @@
       <div v-if="showMenu === 1" class="text-xl font-bold text-gray-800">
         <h2 class="mb-5">Produk Claim</h2>
         <div v-if="loading" class="text-center text-gray-600">Loading...</div>
-        <div v-else-if="error" class="text-center text-red-600">
-          Terjadi kesalahan: {{ error }}
-        </div>
+        <div v-else-if="error" class="text-center text-red-600">Terjadi kesalahan: {{ error }}</div>
         <div v-else>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-6">
             <!-- Menampilkan produk dalam bentuk grid -->
@@ -45,17 +42,11 @@
               class="cursor-pointer bg-white p-2 rounded-md shadow-md hover:shadow-lg transition-all duration-300"
             >
               <div class="flex flex-col items-start">
-                <img
-                  :src="product.pp_image"
-                  alt="Profile Image"
-                  class="rounded-md object-cover mb-4"
-                />
+                <img :src="product.pp_image" alt="Profile Image" class="rounded-md object-cover mb-4" />
                 <h3 class="text-sm font-semibold text-gray-800">
                   {{ product.pp_nama }}
                 </h3>
-                <div class="font-semibold text-sm text-red-600">
-                  Poin: {{ product.pp_point }}
-                </div>
+                <div class="font-semibold text-sm text-red-600">Poin: {{ product.pp_point }}</div>
               </div>
             </div>
           </ul>
@@ -66,9 +57,7 @@
       <div v-if="showMenu === 2" class="text-xl font-bold text-gray-800">
         <h2 class="mb-5">Data Klaim Pengguna</h2>
         <div v-if="loading" class="text-center text-gray-600">Loading...</div>
-        <div v-else-if="error" class="text-center text-red-600">
-          Terjadi kesalahan: {{ error }}
-        </div>
+        <div v-else-if="error" class="text-center text-red-600">Terjadi kesalahan: {{ error }}</div>
         <div v-else>
           <div class="grid gap-6">
             <!-- Menampilkan klaim produk dalam bentuk tile dengan gambar di kiri dan teks di kanan -->
@@ -80,21 +69,13 @@
             >
               <!-- Gambar di kiri -->
               <div class="">
-                <img
-                  :src="claim.pp_image"
-                  alt="Claim Image"
-                  class="w-auto h-16 object-cover rounded-md"
-                />
+                <img :src="claim.pp_image" alt="Claim Image" class="w-auto h-16 object-cover rounded-md" />
               </div>
 
               <!-- Keterangan di kanan -->
               <div class="w-2/3 pl-4 py-0.5">
-                <h3 class="text-[12px] text-red-600 leading-tight mb-0.5">
-                  Produk : {{ claim.pp_nama }}
-                </h3>
-                <div
-                  class="text-[12px] text-gray-600 leading-tight space-y-0.5"
-                >
+                <h3 class="text-[12px] text-red-600 leading-tight mb-0.5">Produk : {{ claim.pp_nama }}</h3>
+                <div class="text-[12px] text-gray-600 leading-tight space-y-0.5">
                   <p class="text-gray-500">Kode Tukar: {{ claim.tkr_kode }}</p>
                   <p class="text-red-600 text[12px]">
                     {{ countdownTo(claim.tkr_tgl_expired) }}
@@ -133,11 +114,13 @@ export default {
   },
   methods: {
     // Fungsi untuk mengambil data produk dari API (untuk Menu 1)
+    goBack() {
+      this.$router.back(); // navigasi kembali
+      window.scrollTo({ top: 0, behavior: "smooth" }); // scroll ke atas
+    },
     async fetchProductClaims() {
       try {
-        const response = await fetch(
-          "https://dreampos.id/admin/api/getProductClaim"
-        );
+        const response = await fetch("https://dreampos.id/admin/api/getProductClaim");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -156,9 +139,7 @@ export default {
 
       if (customerId) {
         try {
-          const response = await fetch(
-            `https://dreampos.id/admin/api/getClaimbyUser/${customerId}`
-          );
+          const response = await fetch(`https://dreampos.id/admin/api/getClaimbyUser/${customerId}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -187,11 +168,7 @@ export default {
 
       if (isNaN(diffDays)) return "Tanggal tidak valid";
 
-      return diffDays > 0
-        ? `${diffDays} hari lagi`
-        : diffDays === 0
-        ? "Hari ini"
-        : `${Math.abs(diffDays)} hari yang lalu`;
+      return diffDays > 0 ? `${diffDays} hari lagi` : diffDays === 0 ? "Hari ini" : `${Math.abs(diffDays)} hari yang lalu`;
     },
 
     countdownTo(dateString) {
@@ -208,9 +185,7 @@ export default {
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
 
-      return `Batas Waktu : ${days} hari ${hours
-        .toString()
-        .padStart(2, "0")} jam ${minutes.toString().padStart(2, "0")} menit`;
+      return `Batas Waktu : ${days} hari ${hours.toString().padStart(2, "0")} jam ${minutes.toString().padStart(2, "0")} menit`;
     },
 
     goToProduct(id) {

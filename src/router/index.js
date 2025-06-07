@@ -110,6 +110,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
 });
 
 // Middleware untuk navigasi: Dieksekusi sebelum setiap perubahan rute
@@ -119,12 +127,8 @@ router.beforeEach((to, from, next) => {
   // Cek apakah ada penanda nomor HP sementara untuk alur OTP
   const hasTempPhoneForOtp = !!localStorage.getItem("temp_phone_for_otp");
 
-  console.log(
-    `Navigating to: ${to.name || to.path}, from: ${from.name || from.path}`
-  );
-  console.log(
-    `isLoggedIn: ${isLoggedIn}, hasTempPhoneForOtp: ${hasTempPhoneForOtp}`
-  );
+  console.log(`Navigating to: ${to.name || to.path}, from: ${from.name || from.path}`);
+  console.log(`isLoggedIn: ${isLoggedIn}, hasTempPhoneForOtp: ${hasTempPhoneForOtp}`);
 
   // 1. Jika pengguna SUDAH LOGIN dan mencoba mengakses halaman autentikasi (Login, OTP, Register)
   if (isLoggedIn && to.meta.authFlow) {
@@ -136,9 +140,7 @@ router.beforeEach((to, from, next) => {
   //    Jika rute tujuan adalah OTP, TAPI belum ada penanda `temp_phone_for_otp` DAN belum login,
   //    maka arahkan kembali ke halaman Login.
   if (to.meta.requiresPhoneInput && !hasTempPhoneForOtp && !isLoggedIn) {
-    console.log(
-      "Attempted to access OTP without temp_phone_for_otp and not logged in, redirecting to /login"
-    );
+    console.log("Attempted to access OTP without temp_phone_for_otp and not logged in, redirecting to /login");
     return next({ name: "Login" });
   }
 
@@ -154,9 +156,7 @@ router.beforeEach((to, from, next) => {
   //    Hapus `temp_phone_for_for_otp` ketika pengguna meninggalkan halaman OTP ke halaman non-autentikasi
   //    Ini mencegah akses langsung ke OTP jika pengguna navigasi keluar dari alur tanpa login.
   if (from.name === "Otp" && !to.meta.authFlow && !isLoggedIn) {
-    console.log(
-      "Leaving OTP page to non-auth flow, clearing temp_phone_for_otp"
-    );
+    console.log("Leaving OTP page to non-auth flow, clearing temp_phone_for_otp");
     localStorage.removeItem("temp_phone_for_otp");
   }
 

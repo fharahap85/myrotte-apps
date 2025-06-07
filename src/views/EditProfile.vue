@@ -20,7 +20,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
+const toast = useToast(); // ✅ setup toast
 const router = useRouter();
 const form = ref({
   name: "",
@@ -36,7 +38,7 @@ const userId = ref(null); // ID akan disimpan di sini
 onMounted(async () => {
   const phone = localStorage.getItem("phone");
   if (!phone) {
-    alert("Nomor telepon tidak ditemukan di localStorage.");
+    toast.error("Nomor telepon tidak ditemukan di localStorage.");
     router.push("/login");
     return;
   }
@@ -60,34 +62,41 @@ onMounted(async () => {
         address: user.address || "",
       };
     } else {
-      alert("Data user tidak ditemukan.");
+      toast.error("Data user tidak ditemukan.");
       router.push("/login");
     }
   } catch (err) {
-    alert("Terjadi kesalahan: " + err.message);
+    toast.error("Terjadi kesalahan: " + err.message);
   }
 });
 
 const submitForm = async () => {
   if (!userId.value) {
-    alert("Gagal update: ID tidak ditemukan");
+    toast.error("Gagal update: ID tidak ditemukan");
     return;
   }
 
-  const res = await fetch(`/api/editUser?id=${userId.value}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(form.value),
-  });
+  const API_BASE = import.meta.env.PROD ? "https://dreampos.id/admin/api" : "/api";
 
-  const data = await res.json();
-  if (data.success) {
-    alert("Profil berhasil diupdate!");
-    router.push("/profile");
-  } else {
-    alert("Gagal mengupdate profil.");
+  try {
+    const res = await fetch(`${API_BASE}/editUser?id=${userId.value}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form.value),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      toast.success("Profil berhasil diupdate!");
+      router.push("/profile");
+    } else {
+      toast.error("Gagal mengupdate profil: " + (data.message || "Unknown error"));
+    }
+  } catch (error) {
+    toast.error("Terjadi kesalahan jaringan: " + error.message);
   }
 };
 </script>
