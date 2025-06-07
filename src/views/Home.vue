@@ -61,7 +61,9 @@ import KategoriList from "../components/KategoriList.vue";
 import ProductList from "../components/ProductList.vue";
 import Cart from "../components/Cart.vue";
 import BestSeller from "../components/BestSeller.vue";
+import { useToast } from "vue-toastification"; // ✅ import toast
 
+const toast = useToast(); // ✅ setup toast
 const kategoriId = ref(null);
 const cart = ref([]);
 const phone = ref("");
@@ -94,6 +96,7 @@ onMounted(async () => {
 
 const logout = () => {
   localStorage.clear();
+  toast.success("Berhasil logout. Sampai jumpa lagi!"); // ✅ notifikasi logout
   router.push("/login");
 };
 
@@ -115,7 +118,7 @@ function hapus(id) {
 }
 
 function checkout() {
-  alert("Pesanan Anda telah diproses!");
+  ("Pesanan Anda telah diproses!");
   cart.value = [];
 }
 </script>

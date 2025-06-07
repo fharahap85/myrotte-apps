@@ -1,21 +1,13 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">
-      Outlet Kami
-    </h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">Outlet Kami</h1>
 
-    <div v-if="loading" class="text-center text-lg text-gray-600">
-      Memuat data outlet dan peta...
-    </div>
+    <div v-if="loading" class="text-center text-lg text-gray-600">Memuat data outlet dan peta...</div>
 
-    <div v-if="error" class="text-center text-red-600 text-lg">
-      Terjadi kesalahan: {{ error }}
-    </div>
+    <div v-if="error" class="text-center text-red-600 text-lg">Terjadi kesalahan: {{ error }}</div>
 
     <div v-if="!loading && !error && outlets.length > 0" class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-        Lokasi Outlet di Peta
-      </h2>
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Lokasi Outlet di Peta</h2>
       <OutletMap :outlets="outlets" />
     </div>
 
@@ -32,9 +24,7 @@
             <h2 class="text-xl font-semibold text-gray-800 mb-2">
               {{ outlet.name }}
             </h2>
-            <div class="text-gray-600 text-sm mb-4">
-              <i class="fas fa-map-marker-alt mr-2"></i>{{ outlet.address }}
-            </div>
+            <div class="text-gray-600 text-sm mb-4"><i class="fas fa-map-marker-alt mr-2"></i>{{ outlet.address }}</div>
             <div class="flex items-center text-gray-700">
               <i class="fas fa-phone mr-2"></i>
               <span>{{ outlet.phone || "Tidak Tersedia" }}</span>
@@ -43,28 +33,21 @@
               {{ outlet.description }}
             </p>
           </div>
-          <div
-            class="bg-blue-100 text-blue-800 text-center py-2 px-4 text-sm font-medium"
-          >
-            Lihat di Google Maps
-          </div>
+          <div class="bg-blue-100 text-blue-800 text-center py-2 px-4 text-sm font-medium">Lihat di Google Maps</div>
         </div>
       </div>
     </div>
 
-    <div
-      v-else-if="!loading && !error"
-      class="text-center text-lg text-gray-600"
-    >
-      Tidak ada data outlet yang tersedia.
-    </div>
+    <div v-else-if="!loading && !error" class="text-center text-lg text-gray-600">Tidak ada data outlet yang tersedia.</div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import OutletMap from "../views/OutletMap.vue"; // <-- Impor komponen peta
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const outlets = ref([]);
 const loading = ref(true);
 const error = ref(null);
@@ -83,9 +66,7 @@ const fetchOutlets = async () => {
     } else if (rawData && Array.isArray(rawData.data)) {
       processedOutlets = rawData.data;
     } else {
-      throw new Error(
-        "Format data outlet tidak sesuai. Diharapkan array atau objek dengan properti 'data' berupa array."
-      );
+      throw new Error("Format data outlet tidak sesuai. Diharapkan array atau objek dengan properti 'data' berupa array.");
     }
 
     // --- PENTING: Lakukan pembersihan HTML di sini ---
@@ -117,12 +98,10 @@ const fetchOutlets = async () => {
 
 const openMaps = (lat, long, name) => {
   if (lat && long) {
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}+${encodeURIComponent(
-      name
-    )}`;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}+${encodeURIComponent(name)}`;
     window.open(mapsUrl, "_blank");
   } else {
-    alert(`Lokasi untuk ${name || "outlet ini"} tidak tersedia.`);
+    toast.warning(`Lokasi untuk ${name || "outlet ini"} tidak tersedia.`);
   }
 };
 

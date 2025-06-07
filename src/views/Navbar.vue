@@ -1,8 +1,6 @@
 <template>
   <!-- Bar atas -->
-  <div
-    class="grid grid-cols-2 bg-red-600 text-white text-sm px-4 py-1 font-semibold"
-  >
+  <div class="grid grid-cols-2 bg-red-600 text-white text-sm px-4 py-1 font-semibold">
     <div class="text-left sm:text-xl">
       {{ isLoggedIn ? "Halo, " + customerName : "" }}
     </div>
@@ -13,12 +11,7 @@
   <div class="flex items-center justify-between px-6 py-4 shadow-lg mb-6">
     <!-- Logo -->
     <div class="flex items-center space-x-2">
-      <router-link to="/home"
-        ><img
-          src="/src/assets/Rotte_Logo 1.png"
-          alt="Logo"
-          class="h-14 w-auto sm:ml-10"
-      /></router-link>
+      <router-link to="/home"><img src="/src/assets/Rotte_Logo 1.png" alt="Logo" class="h-14 w-auto sm:ml-10" /></router-link>
     </div>
 
     <!-- Search -->
@@ -88,9 +81,7 @@
         </button>
       </router-link>
       <template v-else>
-        <router-link to="/profile" class="hover:text-red-600 hover:font-bold"
-          >Profil</router-link
-        >
+        <router-link to="/profile" class="hover:text-red-600 hover:font-bold">Profil</router-link>
         <button @click="logout" class="bg-[#FF0000] py-2 px-4 text-white hover:bg-[#da3838] hover:text-red-200">Logout</button>
       </template>
     </div>
@@ -103,7 +94,9 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { getPromo } from "../api/API";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification"; // ✅ import toast
 
+const toast = useToast(); // ✅ setup toast
 const promos = ref([]);
 const searchQuery = ref("");
 const products = ref([]);
@@ -117,17 +110,16 @@ const awardPoints = ref(0);
 const fetchCustomerProfile = async (phone) => {
   const response = await fetch(`https://dreampos.id/admin/api/getCustomer`);
   const data = await response.json();
-  const customer = data.find(cust => cust.phone === phone);
+  const customer = data.find((cust) => cust.phone === phone);
   if (customer) {
     customerName.value = customer.name;
-    localStorage.setItem('customerId', customer.id); // Menyimpan customer ID
+    localStorage.setItem("customerId", customer.id); // Menyimpan customer ID
     awardPoints.value = parseInt(customer.award_points || 0, 10);
-    localStorage.setItem('award_points', awardPoints.value); // Simpan ke localStorage
+    localStorage.setItem("award_points", awardPoints.value); // Simpan ke localStorage
   } else {
     customerName.value = "Pelanggan tidak ditemukan";
   }
 };
-
 
 const updateLoginStatus = () => {
   isLoggedIn.value = !!localStorage.getItem("phone");
@@ -156,6 +148,7 @@ onUnmounted(() => {
 
 const logout = () => {
   localStorage.clear();
+  toast.success("Berhasil logout. Sampai jumpa lagi!"); // ✅ notifikasi logout
   isLoggedIn.value = false;
   customerName.value = "";
   router.push("/login");
@@ -178,9 +171,7 @@ const searchProducts = () => {
       return;
     }
 
-    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(
-      searchQuery.value
-    )}`;
+    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(searchQuery.value)}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {

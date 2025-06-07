@@ -1,23 +1,14 @@
 <template>
   <div class="m-0 p-0">
     <div class="w-screen h-screen bg-gray-200 p-4">
-      <div
-        class="w-full h-full bg-gray-300 rounded-[2rem] p-6 flex flex-col md:flex-row gap-6"
-      >
+      <div class="w-full h-full bg-gray-300 rounded-[2rem] p-6 flex flex-col md:flex-row gap-6">
         <Iklan />
 
-        <div
-          class="flex flex-col justify-center w-full md:w-1/2 space-y-4 md:order-1"
-        >
+        <div class="flex flex-col justify-center w-full md:w-1/2 space-y-4 md:order-1">
           <form @submit.prevent="verifyOtp" class="max-w-sm mx-auto">
-            <label
-              for="otp-input"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label for="otp-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Masukkan OTP
-              <span v-if="tempPhoneNumber" class="text-gray-600 text-xs">
-                (dikirim ke {{ tempPhoneNumber }})
-              </span>
+              <span v-if="tempPhoneNumber" class="text-gray-600 text-xs"> (dikirim ke {{ tempPhoneNumber }}) </span>
             </label>
             <div class="flex">
               <input
@@ -38,9 +29,7 @@
             >
               Verifikasi
             </button>
-            <p v-if="!tempPhoneNumber" class="text-red-500 text-sm mt-2">
-              Nomor HP tidak ditemukan. Mohon kembali ke halaman login.
-            </p>
+            <p v-if="!tempPhoneNumber" class="text-red-500 text-sm mt-2">Nomor HP tidak ditemukan. Mohon kembali ke halaman login.</p>
           </form>
         </div>
       </div>
@@ -52,10 +41,12 @@
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import Iklan from "./Iklan.vue"; // Pastikan path ini benar
+import { useToast } from "vue-toastification";
 
 const router = useRouter();
 const otp = ref("");
 const tempPhoneNumber = ref(""); // Gunakan ini untuk menyimpan nomor HP sementara dari login
+const toast = useToast();
 
 onMounted(() => {
   // Ambil nomor HP sementara dari localStorage saat komponen dimuat
@@ -64,19 +55,19 @@ onMounted(() => {
     tempPhoneNumber.value = storedPhone;
   } else {
     // Jika tidak ada temp_phone_for_otp, arahkan kembali ke login
-    alert("Mohon masukkan nomor HP Anda di halaman login terlebih dahulu.");
+    toast.warning("Silakan masukkan nomor HP di halaman login terlebih dahulu.");
     router.replace({ name: "Login" }); // Gunakan replace agar user tidak bisa kembali ke OTP dengan back button
   }
 });
 
 const verifyOtp = async () => {
   if (!otp.value) {
-    alert("Mohon masukkan kode OTP.");
+    toast.error("Mohon masukkan kode OTP.");
     return;
   }
 
   if (!tempPhoneNumber.value) {
-    alert("Nomor HP tidak ditemukan. Mohon kembali ke halaman login.");
+    toast.error("Nomor HP tidak ditemukan. Silakan login kembali.");
     router.replace({ name: "Login" });
     return;
   }
@@ -84,9 +75,7 @@ const verifyOtp = async () => {
   try {
     // Panggil API untuk Verifikasi OTP
     // Sesuaikan endpoint dan cara API Anda merespons
-    const res = await fetch(
-      `https://dreampos.id/admin/api/verifikasiOTP?phone=${tempPhoneNumber.value}&otp=${otp.value}`
-    );
+    const res = await fetch(`https://dreampos.id/admin/api/verifikasiOTP?phone=${tempPhoneNumber.value}&otp=${otp.value}`);
     const data = await res.json();
 
     if (res.ok && data.success) {
@@ -101,30 +90,25 @@ const verifyOtp = async () => {
       // Lanjutkan dengan logika setelah berhasil verifikasi OTP:
       // Cek apakah nomor HP sudah terdaftar. Ini bisa dilakukan di backend
       // atau melalui API 'cekNotelp' lagi jika memang alur Anda memerlukan itu.
-      const cekRes = await fetch(
-        `https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`
-      );
+      const cekRes = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`);
       const cekData = await cekRes.json();
 
       // Asumsi: cekData.is_registered adalah boolean yang menandakan pendaftaran.
       // Anda harus menyesuaikan properti ini berdasarkan respons API Anda.
       if (cekData.success && cekData.is_registered) {
-        alert("Verifikasi berhasil! Selamat datang kembali.");
+        toast.success("✅ Login berhasil! Selamat datang kembali.");
         router.push({ name: "Home" }); // User sudah terdaftar, arahkan ke home
       } else {
-        alert("Verifikasi berhasil! Silakan lengkapi pendaftaran Anda.");
+        toast.info("✅ Berhasil Login");
         router.push({ name: "Register" }); // User belum terdaftar, arahkan ke register
       }
     } else {
       // Tampilkan pesan error dari API jika ada, atau pesan default
-      alert(
-        data.message ||
-          "Verifikasi OTP gagal. Kode OTP salah atau sudah kadaluarsa."
-      );
+      toast.error(data.message || "Kode OTP salah atau sudah kadaluarsa.");
     }
   } catch (error) {
     console.error("Error verifying OTP:", error);
-    alert("Terjadi kesalahan jaringan atau server saat memverifikasi OTP.");
+    toast.error("Terjadi kesalahan jaringan atau server saat memverifikasi OTP.");
   }
 };
 </script>

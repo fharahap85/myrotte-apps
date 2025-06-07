@@ -20,8 +20,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const router = useRouter();
+const toast = useToast();
+
 const form = ref({
   name: "",
   gender: "",
@@ -36,7 +39,7 @@ const userId = ref(null); // ID akan disimpan di sini
 onMounted(async () => {
   const phone = localStorage.getItem("phone");
   if (!phone) {
-    alert("Anda belum login.");
+    toast.warning("Anda belum login.");
     router.push("/login");
     return;
   }
@@ -50,7 +53,7 @@ onMounted(async () => {
 
     const user = data.find((u) => String(u.phone) === String(phone));
     if (!user) {
-      alert("Data pengguna tidak ditemukan.");
+      toast.error("Data pengguna tidak ditemukan.");
       router.push("/login");
       return;
     }
@@ -66,13 +69,13 @@ onMounted(async () => {
       address: user.address || "",
     };
   } catch (err) {
-    alert("Terjadi kesalahan saat mengambil data profil: " + err.message);
+    toast.error("Gagal mengambil data profil: " + err.message);
   }
 });
 
 const submitForm = async () => {
   if (!userId.value) {
-    alert("Gagal update: ID tidak ditemukan");
+    toast.error("Gagal update: ID tidak ditemukan.");
     return;
   }
 
@@ -86,10 +89,10 @@ const submitForm = async () => {
 
   const data = await res.json();
   if (data.success) {
-    alert("Profil berhasil diupdate!");
+    toast.success("✅ Profil berhasil diperbarui!");
     router.push("/profile");
   } else {
-    alert("Gagal mengupdate profil.");
+    toast.error("❌ Gagal mengupdate profil.");
   }
 };
 </script>
