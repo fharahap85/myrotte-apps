@@ -73,25 +73,27 @@ const verifyOtp = async () => {
   }
 
   try {
-    // 1. Verifikasi OTP
+    // Verifikasi OTP
     const res = await fetch(`https://dreampos.id/admin/api/verifikasiOTP?phone=${tempPhoneNumber.value}&otp=${otp.value}`);
     const data = await res.json();
 
     if (res.ok && data.success) {
-      // 2. Simpan login
+      // ✅ Simpan nomor setelah verifikasi berhasil
       localStorage.setItem("phone", tempPhoneNumber.value);
       localStorage.removeItem("temp_phone_for_otp");
+
+      // Trigger event perubahan status login
       window.dispatchEvent(new Event("login-status-changed"));
 
-      // 3. Cek apakah nomor terdaftar
+      // Cek ulang apakah nomor terdaftar
       const cekRes = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`);
       const cekData = await cekRes.json();
 
-      if (cekRes.ok && cekData.success) {
-        toast.success("✅ Login berhasil!");
+      if (cekData.success) {
+        toast.success("✅ Login berhasil! Selamat datang.");
         router.push({ name: "Home" });
       } else {
-        toast.info("⚠️ Nomor belum terdaftar. Silakan lengkapi pendaftaran.");
+        toast.info("📋 Nomor belum terdaftar. Silakan lengkapi data.");
         router.push({ name: "Register" });
       }
     } else {
