@@ -63,7 +63,7 @@ const submitPhone = async () => {
 
   try {
     // Tetap kirim OTP meskipun nomor belum terdaftar
-    const response = await fetch(`https://dreampos.id/admin/api/kirimOtp?phone=${fullPhone}`);
+    const response = await fetch(`https://dreampos.id/admin/api/sendOtp?phone=${fullPhone}`);
     const data = await response.json();
 
     if (response.ok && data.success) {
