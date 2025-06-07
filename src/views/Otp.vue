@@ -73,42 +73,33 @@ const verifyOtp = async () => {
   }
 
   try {
-    // Panggil API untuk Verifikasi OTP
-    // Sesuaikan endpoint dan cara API Anda merespons
+    // 1. Verifikasi OTP
     const res = await fetch(`https://dreampos.id/admin/api/verifikasiOTP?phone=${tempPhoneNumber.value}&otp=${otp.value}`);
     const data = await res.json();
 
     if (res.ok && data.success) {
-      // Asumsi API mengembalikan 'success: true' jika OTP benar
-      // --- PENTING: BARU SET 'phone' KE LOCALSTORAGE DI SINI SETELAH OTP TERVERIFIKASI ---
-      localStorage.setItem("phone", tempPhoneNumber.value); // Ini menandakan user sudah login
-      localStorage.removeItem("temp_phone_for_otp"); // Hapus penanda sementara setelah berhasil
-
-      // Dispatch event agar komponen seperti Navbar bisa merespons perubahan status login
+      // 2. Simpan login
+      localStorage.setItem("phone", tempPhoneNumber.value);
+      localStorage.removeItem("temp_phone_for_otp");
       window.dispatchEvent(new Event("login-status-changed"));
 
-      // Lanjutkan dengan logika setelah berhasil verifikasi OTP:
-      // Cek apakah nomor HP sudah terdaftar. Ini bisa dilakukan di backend
-      // atau melalui API 'cekNotelp' lagi jika memang alur Anda memerlukan itu.
+      // 3. Cek apakah nomor terdaftar
       const cekRes = await fetch(`https://dreampos.id/admin/api/cekNotelp?phone=${tempPhoneNumber.value}`);
       const cekData = await cekRes.json();
 
-      // Asumsi: cekData.is_registered adalah boolean yang menandakan pendaftaran.
-      // Anda harus menyesuaikan properti ini berdasarkan respons API Anda.
-      if (cekData.success && cekData.is_registered) {
-        toast.success("✅ Login berhasil! Selamat datang kembali.");
-        router.push({ name: "Home" }); // User sudah terdaftar, arahkan ke home
+      if (cekRes.ok && cekData.success) {
+        toast.success("✅ Login berhasil!");
+        router.push({ name: "Home" });
       } else {
-        toast.info("✅ Berhasil Login");
-        router.push({ name: "Register" }); // User belum terdaftar, arahkan ke register
+        toast.info("⚠️ Nomor belum terdaftar. Silakan lengkapi pendaftaran.");
+        router.push({ name: "Register" });
       }
     } else {
-      // Tampilkan pesan error dari API jika ada, atau pesan default
       toast.error(data.message || "Kode OTP salah atau sudah kadaluarsa.");
     }
   } catch (error) {
     console.error("Error verifying OTP:", error);
-    toast.error("Terjadi kesalahan jaringan atau server saat memverifikasi OTP.");
+    toast.error("Terjadi kesalahan saat memverifikasi OTP.");
   }
 };
 </script>
