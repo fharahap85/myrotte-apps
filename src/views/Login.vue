@@ -59,24 +59,24 @@ const submitPhone = async () => {
   }
 
   const fullPhone = `62${phone.value}`;
-  localStorage.setItem("temp_phone_for_otp", fullPhone); // Simpan nomor untuk halaman OTP
 
   try {
-    // Tetap kirim OTP meskipun nomor belum terdaftar
-    const response = await fetch(`https://dreampos.id/admin/api/sendOtp?telp=${fullPhone}`);
-    const data = await response.json();
+    // Panggil backend untuk mengirim OTP — tidak cek apakah nomor ada
+    const response = await fetch(`https://dreampos.id/admin/api/sendOTP?telp=${fullPhone}`);
 
-    if (response.ok && data.success) {
-      toast.success("✅ OTP berhasil dikirim.");
-    } else {
-      toast.warning("⚠️ OTP dikirim, tetapi ada peringatan dari server.");
+    if (!response.ok) {
+      toast.error("❌ Gagal mengirim OTP. Silakan coba lagi.");
+      return;
     }
 
-    // Tetap navigasi ke halaman OTP
+    // Simpan sementara nomor untuk halaman OTP
+    localStorage.setItem("temp_phone_for_otp", fullPhone);
+
+    toast.success("✅ OTP dikirim. Masukkan kode OTP Anda.");
     router.push({ name: "Otp" });
   } catch (error) {
-    console.error("Gagal mengirim OTP:", error);
-    toast.error("❌ Gagal mengirim OTP. Silakan coba lagi.");
+    console.error("Error kirim OTP:", error);
+    toast.error("⚠️ Gagal mengirim OTP. Coba lagi nanti.");
   }
 };
 </script>
