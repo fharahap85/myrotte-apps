@@ -35,24 +35,36 @@ const userId = ref(null); // ID akan disimpan di sini
 
 onMounted(async () => {
   const phone = localStorage.getItem("phone");
-  const res = await fetch("/api/getCustomer");
-  const data = await res.json();
-
-  const user = data.find((u) => u.phone === phone);
-  if (user) {
-    userId.value = user.id;
-    form.value = {
-      name: user.name || "",
-      gender: user.gender || "",
-      birth: user.birth || "",
-      email: user.email || "",
-      phone: user.phone || "",
-      city: user.city || "",
-      address: user.address || "",
-    };
-  } else {
-    alert("Data user tidak ditemukan.");
+  if (!phone) {
+    alert("Nomor telepon tidak ditemukan di localStorage.");
     router.push("/login");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://dreampos.id/admin/api/getCustomer");
+    if (!res.ok) throw new Error("Gagal mengambil data user");
+
+    const data = await res.json();
+    const user = data.find((u) => u.phone === phone);
+
+    if (user) {
+      userId.value = user.id;
+      form.value = {
+        name: user.name || "",
+        gender: user.gender || "",
+        birth: user.birth || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        city: user.city || "",
+        address: user.address || "",
+      };
+    } else {
+      alert("Data user tidak ditemukan.");
+      router.push("/login");
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan: " + err.message);
   }
 });
 
@@ -72,7 +84,7 @@ const submitForm = async () => {
 
   const data = await res.json();
   if (data.success) {
-    alert("Profil berhasil diupdate!!");
+    alert("Profil berhasil diupdate!");
     router.push("/profile");
   } else {
     alert("Gagal mengupdate profil.");
