@@ -6,7 +6,7 @@
       <div v-for="item in filtered" :key="item.id || item.phone" class="grid grid-cols-2 border p-4 rounded-xl shadow text-[#FF0000]">
         <router-link to="/rottepoin">
           <div class="flex justify-start items-center space-x-4">
-            <img src="/src/assets/Tukar point.png" alt="" class="size-16" />
+            <img src="/src/assets/icon point.png" alt="" class="size-16" />
             <p class="font-semibold text-lg text-left">
               Rotte Poin <br />
               {{ item.award_points }}
@@ -44,7 +44,6 @@
       <img src="/src/assets/BG.png" alt="" class="w-full lg:mb-5 p-3 lg:p-20" />
       <img src="/src/assets/banner_bawah.png" alt="" class="w-full mt-5" />
     </div>
-    <Footer />
   </div>
 </template>
 
