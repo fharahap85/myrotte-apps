@@ -43,7 +43,7 @@
                   <li><router-link to="#" class="hover:text-red-400">Home</router-link></li>
                   <li><router-link to="/outlet" class="hover:text-red-400">Outlet Kami</router-link></li>
                   <li><router-link to="/kebijakanprivasi" class="hover:text-red-400">Kebijakan Privasi</router-link></li>
-                  <li><router-link to="/syaratketentuan" class="hover:text-red-400">Syarat Ketentuan</router-link></li>
+                  <li><router-link to="/syaratketentuan" class="hover:text-red-400">Syarat & Ketentuan</router-link></li>
                 </ul>
               </div>
             </div>
