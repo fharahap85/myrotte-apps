@@ -19,52 +19,52 @@ import Outlet from "../views/Outlet.vue";
 
 const routes = [
   { path: "/", redirect: "/home" },
-  {
-    path: "/login",
-    name: "Login",
-    component: Login,
-    meta: {
-      hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
-      authFlow: true, // Menandakan ini bagian dari alur autentikasi
-    },
-  },
-  {
-    path: "/otp",
-    name: "Otp",
-    component: Otp,
-    meta: {
-      hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
-      authFlow: true, // Menandakan ini bagian dari alur autentikasi
-      requiresPhoneInput: true, // Memerlukan penanda temp_phone_for_otp dari login
-    },
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: Register,
-    meta: {
-      hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
-      authFlow: true, // Menandakan ini bagian dari alur autentikasi
-    },
-  },
-  {
-    path: "/profile",
-    name: "Profile", // Tambahkan nama rute
-    component: Profile,
-    meta: { requiresAuth: true }, // Memerlukan autentikasi
-  },
-  {
-    path: "/rottepoin",
-    name: "RottePoin", // Tambahkan nama rute
-    component: RottePoin,
-    meta: { requiresAuth: true }, // Memerlukan autentikasi
-  },
-  {
-    path: "/tukarpoin",
-    name: "TukarPoin", // Tambahkan nama rute
-    component: TukarPoin,
-    meta: { requiresAuth: true }, // Memerlukan autentikasi
-  },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   component: Login,
+  //   meta: {
+  //     hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
+  //     authFlow: true, // Menandakan ini bagian dari alur autentikasi
+  //   },
+  // },
+  // {
+  //   path: "/otp",
+  //   name: "Otp",
+  //   component: Otp,
+  //   meta: {
+  //     hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
+  //     authFlow: true, // Menandakan ini bagian dari alur autentikasi
+  //     requiresPhoneInput: true, // Memerlukan penanda temp_phone_for_otp dari login
+  //   },
+  // },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   component: Register,
+  //   meta: {
+  //     hideNavbarFooter: true, // Untuk menyembunyikan Navbar/Footer di halaman ini
+  //     authFlow: true, // Menandakan ini bagian dari alur autentikasi
+  //   },
+  // },
+  // {
+  //   path: "/profile",
+  //   name: "Profile", // Tambahkan nama rute
+  //   component: Profile,
+  //   meta: { requiresAuth: true }, // Memerlukan autentikasi
+  // },
+  // {
+  //   path: "/rottepoin",
+  //   name: "RottePoin", // Tambahkan nama rute
+  //   component: RottePoin,
+  //   meta: { requiresAuth: true }, // Memerlukan autentikasi
+  // },
+  // {
+  //   path: "/tukarpoin",
+  //   name: "TukarPoin", // Tambahkan nama rute
+  //   component: TukarPoin,
+  //   meta: { requiresAuth: true }, // Memerlukan autentikasi
+  // },
   { path: "/home", name: "Home", component: Home },
   {
     path: "/syaratketentuan",

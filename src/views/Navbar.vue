@@ -1,6 +1,8 @@
 <template>
   <!-- Bar atas -->
-  <div class="grid grid-cols-2 bg-red-600 text-white text-sm px-4 py-1 font-semibold">
+  <div
+    class="grid grid-cols-2 bg-red-600 text-white text-sm px-4 py-1 font-semibold"
+  >
     <div class="text-left sm:text-xl">
       {{ isLoggedIn ? "Halo, " + customerName : "" }}
     </div>
@@ -11,7 +13,12 @@
   <div class="flex items-center justify-between px-6 py-4 shadow-lg mb-6">
     <!-- Logo -->
     <div class="flex items-center space-x-2">
-      <router-link to="/home"><img src="/src/assets/Rotte_Logo 1.png" alt="Logo" class="h-14 w-auto sm:ml-10" /></router-link>
+      <router-link to="/home"
+        ><img
+          src="/src/assets/Rotte_Logo 1.png"
+          alt="Logo"
+          class="h-14 w-auto sm:ml-10"
+      /></router-link>
     </div>
 
     <!-- Search -->
@@ -55,8 +62,10 @@
 
     <!-- Tombol -->
     <div class="flex items-center space-x-4 font-semibold">
-      <router-link to="/home" class="hover:text-red-600 hover:font-bold">Home</router-link>
-      <router-link v-if="!isLoggedIn" to="/login">Daftar</router-link>
+      <router-link to="/home" class="hover:text-red-600 hover:font-bold"
+        >Home</router-link
+      >
+      <!-- <router-link v-if="!isLoggedIn" to="/login">Daftar</router-link>
       <router-link v-if="!isLoggedIn" to="/login">
         <button
           class="flex items-center bg-gradient-to-r to-[#D00B0B] from-[#FF6262] hover:bg-gradient-to-r hover:from-[#D00B0B] hover:to-[#FF6262] text-white hover:text-red-950 px-4 py-2 rounded text-sm"
@@ -83,7 +92,7 @@
       <template v-else>
         <router-link to="/profile" class="hover:text-red-600 hover:font-bold">Profil</router-link>
         <button @click="logout" class="bg-[#FF0000] py-2 px-4 text-white hover:bg-[#da3838] hover:text-red-200">Logout</button>
-      </template>
+      </template> -->
     </div>
   </div>
 </template>
@@ -171,7 +180,9 @@ const searchProducts = () => {
       return;
     }
 
-    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(searchQuery.value)}`;
+    const url = `https://dreampos.id/admin/api/getproduct?name=${encodeURIComponent(
+      searchQuery.value
+    )}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
